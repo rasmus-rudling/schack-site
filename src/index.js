@@ -1,10 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Importerar bootstrap
+import Signup from './Signup/signup.js';
+import Login from './Login/login.js';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useRouteMatch,
+    useParams,
+    useHistory
+  } from "react-router-dom";
+
+
+// Gör att vi kan använda oss av firebase-anrop i denna komponent, behöver göras för alla komponenter där vi vill använda firebase-anrop
+const firebase = require('firebase') 
+
+// Detta måste gömmas på något vis, api-nycklar ska inte ligga öppet
+const firebaseConfig = {
+    apiKey: "AIzaSyDT6Op964wYEV7xUsUvcrCkrjgf_Cy6VoM",
+    authDomain: "schack-app.firebaseapp.com",
+    databaseURL: "https://schack-app.firebaseio.com",
+    projectId: "schack-app",
+    storageBucket: "schack-app.appspot.com",
+    messagingSenderId: "248239041301",
+    appId: "1:248239041301:web:03c4e06cafb50ad4af971c",
+    measurementId: "G-EYPL3X6LH0"
+  };
+
+// Initialize Firebase --> Görs en gång för hela react-appen
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+const routing = (
+    <Router>
+        <Switch>
+            <Route path="/signup">
+                <Signup />
+            </Route>
+
+            <Route path="/login">
+                <Login />
+            </Route>
+        </Switch>
+    </Router>
+)
+
+ReactDOM.render(routing, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
