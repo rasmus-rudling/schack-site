@@ -3,18 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importerar bootstrap
-import Signup from './Signup/signup.js';
-import Login from './Login/login.js';
+import App from './App';
 
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    useRouteMatch,
-    useParams,
-    useHistory
-  } from "react-router-dom";
 
 
 // Gör att vi kan använda oss av firebase-anrop i denna komponent, behöver göras för alla komponenter där vi vill använda firebase-anrop
@@ -36,21 +26,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-const routing = (
-    <Router>
-        <Switch>
-            <Route path="/signup">
-                <Signup />
-            </Route>
 
-            <Route path="/login">
-                <Login />
-            </Route>
-        </Switch>
-    </Router>
-)
-
-ReactDOM.render(routing, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
