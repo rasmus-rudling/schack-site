@@ -37,7 +37,17 @@ function Signup() {
                             setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
                             setShow(true)
                         } else {
-                            console.log('Det funkade - woho!!');
+                            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                                const errorCode = error.code;
+                                const errorMessage = error.message;
+                                console.log(`${errorCode}: ${errorMessage}`)
+                            });
+                            
+                            firebase
+                                .firestore()
+                                .collection("users").doc(email).set({
+                                    firstName: firstName
+                                }).then(() => console.log('Användare skapad!')) // Massa kvar att göra här men det funkar!!!
                         }
                     }}>
                         <Form.Row>
