@@ -63,24 +63,24 @@ function Signup() {
                     }, 1000);
 
                     setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
-                } else if (errorMessage === 'Password should be at least 6 characters') {
-                    setErrorTitle('Svagt lösenord!')
-                    setErrorText(<p>Lösenordet måste åtminstone vara 6 karaktärer långt.</p>)
-                    setShow(true)
-
-                    document.getElementById('password').focus();
-
-                    setTimeout(() => {
-                        setSignupErrorBoxClasses('signup-error-msg');
-                    }, 1000);
-
-                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
                 } else if (errorMessage === 'The email address is badly formatted.') {
                     setErrorTitle('Felformaterad mailadress!')
                     setErrorText(<p>Mailen "{email}" är inte korrekt formaterad.</p>)
                     setShow(true)
 
                     document.getElementById('email').focus();
+
+                    setTimeout(() => {
+                        setSignupErrorBoxClasses('signup-error-msg');
+                    }, 1000);
+
+                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+                } else if (errorMessage === 'Password should be at least 6 characters') {
+                    setErrorTitle('Svagt lösenord!')
+                    setErrorText(<p>Lösenordet måste åtminstone vara 6 karaktärer långt.</p>)
+                    setShow(true)
+
+                    document.getElementById('password').focus();
 
                     setTimeout(() => {
                         setSignupErrorBoxClasses('signup-error-msg');
