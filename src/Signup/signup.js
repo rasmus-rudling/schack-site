@@ -30,19 +30,7 @@ function Signup() {
 
     function submitSignupForm(event) {
         event.preventDefault(); //Hindrar formuläret från att uppdatera sidan
-                        
-        if (!passwordEqual(password, passwordCheck)) {
-            setTimeout(() => {
-                setSignupErrorBoxClasses('signup-error-msg');
-                console.log('Nu03')
-            }, 1000);
 
-            setErrorTitle('Lösenorden matchar inte!')
-            setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
-            setShow(true)
-            setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
-        } else {
-            
             let errorMessage = '';
 
             firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => {
@@ -87,6 +75,16 @@ function Signup() {
                     }, 1000);
 
                     setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+                } else if (!passwordEqual(password, passwordCheck)) {
+                    setTimeout(() => {
+                        setSignupErrorBoxClasses('signup-error-msg');
+                        console.log('Nu03')
+                    }, 1000);
+        
+                    setErrorTitle('Lösenorden matchar inte!')
+                    setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
+                    setShow(true)
+                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
                 } else {
                     firebase.auth().onAuthStateChanged(user => {
                         if (user) {
@@ -105,7 +103,6 @@ function Signup() {
                     });
                 }
             });                   
-        }
     }
 
     return (
