@@ -22,47 +22,47 @@ function Login() {
     const [errorText, setErrorText] = useState('');
     const [loginErrorBoxClasses, setLoginErrorBoxClasses] = useState('login-error-msg');
 
+    function submitLoginForm(event) {
+        event.preventDefault();
+                        
+        firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+            history.push('/homepage');
+        
+        }, error => {
+            let errorMessage = error.message;
+
+            if (errorMessage === 'The email address is badly formatted.') {
+                setErrorTitle('Nu blev det lite fel med mailen!')
+                setErrorText('Din mail är inte korrekt formaterad.')
+                setShow(true)
+            } else if (errorMessage === 'There is no user record corresponding to this identifier. The user may have been deleted.') {
+                setErrorTitle('Fel mailadress!')
+                setErrorText(`Det finns ingen användare med mailen "${email}" i vår databas.`)
+                setShow(true)
+            } else if (errorMessage === 'The password is invalid or the user does not have a password.') {
+                setErrorTitle('Fel lösenord!')
+                setErrorText(`Lösenordet du angav matchar inte med mailen "${email}".`)
+                setShow(true)
+            } else if (errorMessage === 'Too many unsuccessful login attempts. Please try again later.') {
+                setErrorTitle('För många misslyckade försök!')
+                setErrorText(<p>Försök gärna igen om ett tag eller återställ ditt lösenord <Link to='/signup'>HÄR</Link>.</p>)
+                setShow(true)
+            }
+
+            setTimeout(() => {
+                setLoginErrorBoxClasses('login-error-msg')
+            }, 1000);
+            
+            setLoginErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' login-error-msg-animation');
+            console.log(error.message)
+        }); 
+    }
 
     return (
         <Container>
             <Row>
                 <Col md={8}>
-                    <Form onSubmit={e => {
-                        e.preventDefault();
-                        
-                        setTimeout(() => {
-                            setLoginErrorBoxClasses('login-error-msg')
-                        }, 1000);
-
-                        firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-                            history.push('/homepage');
-                        
-                        }, error => {
-                            let errorMessage = error.message;
-
-                            if (errorMessage === 'The email address is badly formatted.') {
-                                setErrorTitle('Nu blev det lite fel med mailen!')
-                                setErrorText('Din mail är inte korrekt formaterad.')
-                                setShow(true)
-                            } else if (errorMessage === 'There is no user record corresponding to this identifier. The user may have been deleted.') {
-                                setErrorTitle('Fel mailadress!')
-                                setErrorText(`Det finns ingen användare med mailen "${email}" i vår databas.`)
-                                setShow(true)
-                            } else if (errorMessage === 'The password is invalid or the user does not have a password.') {
-                                setErrorTitle('Fel lösenord!')
-                                setErrorText(`Lösenordet du angav matchar inte med mailen "${email}".`)
-                                setShow(true)
-                            } else if (errorMessage === 'Too many unsuccessful login attempts. Please try again later.') {
-                                setErrorTitle('För många misslyckade försök!')
-                                setErrorText(<p>Försök gärna igen om ett tag eller återställ ditt lösenord <Link to='/signup'>HÄR</Link>.</p>)
-                                setShow(true)
-                            }
-                            
-                            setLoginErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' login-error-msg-animation');
-                            console.log(error.message)
-
-                        });
-                    }}>  
+                    <Form onSubmit={event => submitLoginForm(event)}>  
                         <Form.Row>
                             <Form.Group as={Col} md="6" controlId="validationCustomUsername">
                                 <Form.Label>Mail</Form.Label>

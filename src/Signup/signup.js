@@ -28,63 +28,76 @@ function Signup() {
         return pass1 === pass2;
     }
 
+    function submitSignupForm(event) {
+        event.preventDefault(); //Hindrar formuläret från att uppdatera sidan
+                        
+        if (!passwordEqual(password, passwordCheck)) {
+            setTimeout(() => {
+                setSignupErrorBoxClasses('signup-error-msg');
+                console.log('Nu03')
+            }, 1000);
+
+            setErrorTitle('Lösenorden matchar inte!')
+            setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
+            setShow(true)
+            setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+        } else {
+            
+            let errorMessage = '';
+
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => {
+                errorMessage = error.message;
+                console.log(errorMessage)
+
+            }).then(() => {
+                if (errorMessage === 'The email address is already in use by another account.') {
+                    setErrorTitle('Mailadressen finns redan!')
+                    setErrorText(<p>Mailen "{email}" är redan registrerad till en användare. Klicka <Link to='/login'>HÄR</Link> för att återställa ditt lösenord och <Link to='/login'>HÄR</Link> för att logga in</p>)
+                    setShow(true)
+
+                    setTimeout(() => {
+                        setSignupErrorBoxClasses('signup-error-msg');
+                        console.log('Nu03')
+                    }, 1000);
+
+                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+                } else if (errorMessage === 'Password should be at least 6 characters') {
+                    setErrorTitle('Svagt lösenord!')
+                    setErrorText(<p>Lösenordet måste åtminstone vara 6 karaktärer långt.</p>)
+                    setShow(true)
+
+                    setTimeout(() => {
+                        setSignupErrorBoxClasses('signup-error-msg');
+                        console.log('Nu03')
+                    }, 1000);
+
+                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+                } else {
+                    firebase.auth().onAuthStateChanged(user => {
+                        if (user) {
+                            firebase.firestore().collection("users").doc(email).set({
+                                email: email,
+                                firstName: firstName,
+                                surName: surName,
+                                gamesWon: 0,
+                                gamesLost: 0,
+                                gamesDraw: 0
+
+                            }).then(history.push('/homepage'))
+                        } else {
+                            console.log('Ingen användare loggades in') // Detta borde aldrig hända
+                        }
+                    });
+                }
+            });                   
+        }
+    }
+
     return (
         <Container>
             <Row>
                 <Col>
-                    <Form onSubmit={e => {
-                        e.preventDefault(); //Hindrar formuläret från att uppdatera sidan
-                        
-                        if (!passwordEqual(password, passwordCheck)) {
-                            setTimeout(() => {
-                                setSignupErrorBoxClasses('signup-error-msg');
-                                console.log('Nu03')
-                            }, 1000);
-
-                            setErrorTitle('Lösenorden matchar inte!')
-                            setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
-                            setShow(true)
-                            setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
-                        } else {
-                            
-                            let errorMessage = '';
-
-                            firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => {
-                                errorMessage = error.message;
-                            }).then(() => {
-                                if (errorMessage === 'The email address is already in use by another account.') {
-                                    setErrorTitle('Mailadressen finns redan!')
-                                    setErrorText(<p>Mailen "{email}" är redan registrerad till en användare. Klicka <Link to='/login'>HÄR</Link> för att återställa ditt lösenord och <Link to='/login'>HÄR</Link> för att logga in</p>)
-                                    setShow(true)
-
-                                    setTimeout(() => {
-                                        setSignupErrorBoxClasses('signup-error-msg');
-                                        console.log('Nu03')
-                                    }, 1000);
-
-                                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
-                                } else {
-                                    firebase.auth().onAuthStateChanged(user => {
-                                        if (user) {
-                                            firebase.firestore().collection("users").doc(email).set({
-                                                email: email,
-                                                firstName: firstName,
-                                                surName: surName,
-                                                gamesWon: 0,
-                                                gamesLost: 0,
-                                                gamesDraw: 0
-
-                                            }).then(history.push('/homepage'))
-                                        } else {
-                                            console.log('Ingen användare loggades in') // Detta borde aldrig hända
-                                        }
-                                    });
-                                }
-                            });
-
-                                                        
-                        }
-                    }}>
+                    <Form onSubmit={event => submitSignupForm(event)}>
                         <Form.Row>
                             <Form.Group as={Col} md="4" controlId="validationCustom01">
                                 <Form.Label>Förnamn</Form.Label>
@@ -92,11 +105,10 @@ function Signup() {
                                 required
                                 type="text"
                                 placeholder="Förnamn"
-                                onChange={ e => {
+                                onChange={e => {
                                     setFirstName(e.target.value)
                                 }}
                                 />
-                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group as={Col} md="4" controlId="validationCustom02">
@@ -126,7 +138,6 @@ function Signup() {
                                         placeholder="Mail"
                                         aria-describedby="inputGroupPrepend"
                                         required
-                                        
                                         onChange={ e => {
                                             setEmail(e.target.value)
                                         }}  
@@ -193,8 +204,7 @@ function Signup() {
             <Row>
                 <Col md={8}>
                     {
-                        show ? (
-                        
+                        show ? (  
                             <Alert variant="danger" className={signupErrorBoxClasses} onClose={() => setShow(false)} dismissible>
                                 <Alert.Heading>{errorTitle}</Alert.Heading>
                                 {errorText}
