@@ -1,3 +1,27 @@
-.error-msg {
+.login-error-msg {
     margin-top: 15px;
+}
+
+.login-error-msg-animation {
+    animation: zoomInAndOut 0.75s forwards;
+}
+
+@keyframes zoomInAndOut {
+    0% {
+        transform: scale(1,1);
+    }
+    50% {
+        transform: scale(1.05, 1.05);
+    }
+    100% {
+        transform: scale(1,1);
+    }
+}
+
+.login-link-in-form {
+    margin-left: 5px;
+}
+
+.login-submit-btn {
+    margin-top: 7px;
 }

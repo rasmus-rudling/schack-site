@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { Col, Row } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert'
 
 
@@ -20,6 +20,9 @@ function Signup() {
     const [show, setShow] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorText, setErrorText] = useState('');
+    const [signupErrorBoxClasses, setSignupErrorBoxClasses] = useState('signup-error-msg');
+
+    const history = useHistory();
 
     function passwordEqual(pass1, pass2) {
         return pass1 === pass2;
@@ -31,23 +34,47 @@ function Signup() {
                 <Col>
                     <Form onSubmit={e => {
                         e.preventDefault(); //Hindrar formuläret från att uppdatera sidan
-                        console.log('Hej01')
+                        
+                        setTimeout(() => {
+                            setSignupErrorBoxClasses('signup-error-msg')
+                        }, 1500);
+
                         if (!passwordEqual(password, passwordCheck)) {
                             setErrorTitle('Lösenorden matchar inte!')
                             setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
                             setShow(true)
                         } else {
-                            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-                                const errorCode = error.code;
-                                const errorMessage = error.message;
-                                console.log(`${errorCode}: ${errorMessage}`)
+                            let errorMessage = '';
+
+                            firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => {
+                                errorMessage = error.message;
+                            }).then(() => {
+                                if (errorMessage === 'The email address is already in use by another account.') {
+                                    setErrorTitle('Mailadressen finns redan!')
+                                    setErrorText(<p>Mailen "{email}" är redan registrerad till en användare. Klicka <Link to='/login'>HÄR</Link> för att återställa ditt lösenord och <Link to='/login'>HÄR</Link> för att logga in</p>)
+                                    setShow(true)
+
+                                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+                                } else {
+                                    firebase.auth().onAuthStateChanged(user => {
+                                        if (user) {
+                                            firebase.firestore().collection("users").doc(email).set({
+                                                email: email,
+                                                firstName: firstName,
+                                                surName: surName,
+                                                gamesWon: 0,
+                                                gamesLost: 0,
+                                                gamesDraw: 0
+
+                                            }).then(history.push('/homepage'))
+                                        } else {
+                                            console.log('Ingen användare loggades in') // Detta borde aldrig hända
+                                        }
+                                    });
+                                }
                             });
-                            
-                            firebase
-                                .firestore()
-                                .collection("users").doc(email).set({
-                                    firstName: firstName
-                                }).then(() => console.log('Användare skapad!')) // Massa kvar att göra här men det funkar!!!
+
+                                                        
                         }
                     }}>
                         <Form.Row>
@@ -67,12 +94,12 @@ function Signup() {
                             <Form.Group as={Col} md="4" controlId="validationCustom02">
                                 <Form.Label>Efternamn</Form.Label>
                                 <Form.Control
-                                required
-                                type="text"
-                                placeholder="Efternamn"
-                                onChange={ e => {
-                                    setSurname(e.target.value)
-                                }}  
+                                    required
+                                    type="text"
+                                    placeholder="Efternamn"
+                                    onChange={ e => {
+                                        setSurname(e.target.value)
+                                    }}  
                                 />
                             </Form.Group>
 
@@ -91,6 +118,7 @@ function Signup() {
                                         placeholder="Mail"
                                         aria-describedby="inputGroupPrepend"
                                         required
+                                        
                                         onChange={ e => {
                                             setEmail(e.target.value)
                                         }}  
@@ -141,13 +169,13 @@ function Signup() {
 
                         <Form.Row>
                             <Form.Label>
-                                <Link to='/login'>
+                                <Link to='/login' className='signup-link-in-form'>
                                     Har du redan ett konto? Tryck här för att logga in!
                                 </Link>
                             </Form.Label>
                         </Form.Row>
 
-                        <Button type="submit">Gå med</Button>
+                        <Button type="submit" className='signup-submit-btn'>Gå med</Button>
 
                     </Form>
                 </Col>
@@ -155,11 +183,11 @@ function Signup() {
             
 
             <Row>
-                <Col md={6}>
+                <Col md={8}>
                     {
                         show ? (
                         
-                            <Alert variant="danger" className='error-msg' onClose={() => setShow(false)} dismissible>
+                            <Alert variant="danger" className={signupErrorBoxClasses} onClose={() => setShow(false)} dismissible>
                                 <Alert.Heading>{errorTitle}</Alert.Heading>
                                 <p>
                                     {errorText}

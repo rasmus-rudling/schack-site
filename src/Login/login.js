@@ -20,6 +20,7 @@ function Login() {
     const [show, setShow] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorText, setErrorText] = useState('');
+    const [loginErrorBoxClasses, setLoginErrorBoxClasses] = useState('login-error-msg');
 
 
     return (
@@ -28,6 +29,10 @@ function Login() {
                 <Col md={8}>
                     <Form onSubmit={e => {
                         e.preventDefault();
+                        
+                        setTimeout(() => {
+                            setLoginErrorBoxClasses('login-error-msg')
+                        }, 1500);
 
                         firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
                             history.push('/homepage');
@@ -47,7 +52,13 @@ function Login() {
                                 setErrorTitle('Fel lösenord!')
                                 setErrorText(`Lösenordet du angav matchar inte med mailen "${email}".`)
                                 setShow(true)
+                            } else if (errorMessage === 'Too many unsuccessful login attempts. Please try again later.') {
+                                setErrorTitle('För många misslyckade försök!')
+                                setErrorText(<p>Försök gärna igen om ett tag eller återställ ditt lösenord <Link to='/signup'>HÄR</Link>.</p>)
+                                setShow(true)
                             }
+                            
+                            setLoginErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' login-error-msg-animation');
                             console.log(error.message)
 
                         });
@@ -66,7 +77,7 @@ function Login() {
                                         aria-describedby="inputGroupPrepend"
                                         required
                                         onChange={e => {
-                                            setEmail(e.target.value)
+                                            setEmail(e.target.value);
                                         }}
                                     />
 
@@ -91,7 +102,7 @@ function Login() {
                                         aria-describedby="inputGroupPrepend"
                                         required
                                         onChange={e => {
-                                            setPassword(e.target.value)
+                                            setPassword(e.target.value);
                                         }}
                                     />
 
@@ -104,13 +115,13 @@ function Login() {
 
                         <Form.Row>
                             <Form.Label>
-                                <Link to='/signup'>
+                                <Link to='/signup' className='login-link-in-form'>
                                     Har du inget konto? Tryck här för att skapa ett!
                                 </Link>
                             </Form.Label>
                         </Form.Row>
 
-                        <Button type="submit">Logga in</Button>
+                        <Button type="submit" className='login-submit-btn'>Logga in</Button>
                     </Form>
                 </Col>
             </Row>
@@ -120,7 +131,14 @@ function Login() {
                     {
                         show ? (
                         
-                            <Alert variant="danger" className='error-msg' onClose={() => setShow(false)} dismissible>
+                            <Alert 
+                                variant="danger"
+                                className={loginErrorBoxClasses} 
+                                onClose={() => {
+                                    setShow(false);
+                                }}
+                                dismissible
+                            >
                                 <Alert.Heading>{errorTitle}</Alert.Heading>
                                 <p>
                                     {errorText}
