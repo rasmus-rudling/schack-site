@@ -35,15 +35,18 @@ function Signup() {
                     <Form onSubmit={e => {
                         e.preventDefault(); //Hindrar formuläret från att uppdatera sidan
                         
-                        setTimeout(() => {
-                            setSignupErrorBoxClasses('signup-error-msg')
-                        }, 1500);
-
                         if (!passwordEqual(password, passwordCheck)) {
+                            setTimeout(() => {
+                                setSignupErrorBoxClasses('signup-error-msg');
+                                console.log('Nu03')
+                            }, 1000);
+
                             setErrorTitle('Lösenorden matchar inte!')
                             setErrorText('Se till så att lösenorden matchar så att du inte glömmer vilket du valde.')
                             setShow(true)
+                            setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
                         } else {
+                            
                             let errorMessage = '';
 
                             firebase.auth().createUserWithEmailAndPassword(email, password).catch(error => {
@@ -53,6 +56,11 @@ function Signup() {
                                     setErrorTitle('Mailadressen finns redan!')
                                     setErrorText(<p>Mailen "{email}" är redan registrerad till en användare. Klicka <Link to='/login'>HÄR</Link> för att återställa ditt lösenord och <Link to='/login'>HÄR</Link> för att logga in</p>)
                                     setShow(true)
+
+                                    setTimeout(() => {
+                                        setSignupErrorBoxClasses('signup-error-msg');
+                                        console.log('Nu03')
+                                    }, 1000);
 
                                     setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
                                 } else {
@@ -189,9 +197,7 @@ function Signup() {
                         
                             <Alert variant="danger" className={signupErrorBoxClasses} onClose={() => setShow(false)} dismissible>
                                 <Alert.Heading>{errorTitle}</Alert.Heading>
-                                <p>
-                                    {errorText}
-                                </p>
+                                {errorText}
                             </Alert>
                         ) : (<div></div>)
                     }

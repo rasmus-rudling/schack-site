@@ -32,7 +32,7 @@ function Login() {
                         
                         setTimeout(() => {
                             setLoginErrorBoxClasses('login-error-msg')
-                        }, 1500);
+                        }, 1000);
 
                         firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
                             history.push('/homepage');
@@ -140,9 +140,9 @@ function Login() {
                                 dismissible
                             >
                                 <Alert.Heading>{errorTitle}</Alert.Heading>
-                                <p>
-                                    {errorText}
-                                </p>
+                                
+                                {errorText}
+                                
                             </Alert>
                         ) : (<div></div>)
                     }

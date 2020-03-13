@@ -3,7 +3,7 @@
 }
 
 .signup-error-msg-animation {
-    animation: zoomInAndOut 0.75s forwards;
+    animation: zoomInAndOut 1s forwards;
 }
 
 @keyframes zoomInAndOut {
