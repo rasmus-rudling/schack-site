@@ -35,14 +35,17 @@ function Login() {
                 setErrorTitle('Nu blev det lite fel med mailen!')
                 setErrorText('Din mail är inte korrekt formaterad.')
                 setShow(true)
+                document.getElementById('email').focus();
             } else if (errorMessage === 'There is no user record corresponding to this identifier. The user may have been deleted.') {
                 setErrorTitle('Fel mailadress!')
                 setErrorText(`Det finns ingen användare med mailen "${email}" i vår databas.`)
                 setShow(true)
+                document.getElementById('email').focus();
             } else if (errorMessage === 'The password is invalid or the user does not have a password.') {
                 setErrorTitle('Fel lösenord!')
                 setErrorText(`Lösenordet du angav matchar inte med mailen "${email}".`)
                 setShow(true)
+                document.getElementById('password').focus();
             } else if (errorMessage === 'Too many unsuccessful login attempts. Please try again later.') {
                 setErrorTitle('För många misslyckade försök!')
                 setErrorText(<p>Försök gärna igen om ett tag eller återställ ditt lösenord <Link to='/signup'>HÄR</Link>.</p>)
@@ -72,10 +75,11 @@ function Login() {
                                     </InputGroup.Prepend>
 
                                     <Form.Control
-                                        type="text"
+                                        type="email"
                                         placeholder="Mail"
                                         aria-describedby="inputGroupPrepend"
                                         required
+                                        id="email"
                                         onChange={e => {
                                             setEmail(e.target.value);
                                         }}
@@ -101,6 +105,7 @@ function Login() {
                                         placeholder="Lösenord"
                                         aria-describedby="inputGroupPrepend"
                                         required
+                                        id="password"
                                         onChange={e => {
                                             setPassword(e.target.value);
                                         }}

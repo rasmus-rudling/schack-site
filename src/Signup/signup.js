@@ -55,6 +55,8 @@ function Signup() {
                     setErrorText(<p>Mailen "{email}" är redan registrerad till en användare. Klicka <Link to='/login'>HÄR</Link> för att återställa ditt lösenord och <Link to='/login'>HÄR</Link> för att logga in</p>)
                     setShow(true)
 
+                    document.getElementById('email').focus();
+
                     setTimeout(() => {
                         setSignupErrorBoxClasses('signup-error-msg');
                         console.log('Nu03')
@@ -66,9 +68,22 @@ function Signup() {
                     setErrorText(<p>Lösenordet måste åtminstone vara 6 karaktärer långt.</p>)
                     setShow(true)
 
+                    document.getElementById('password').focus();
+
                     setTimeout(() => {
                         setSignupErrorBoxClasses('signup-error-msg');
-                        console.log('Nu03')
+                    }, 1000);
+
+                    setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
+                } else if (errorMessage === 'The email address is badly formatted.') {
+                    setErrorTitle('Felformaterad mailadress!')
+                    setErrorText(<p>Mailen "{email}" är inte korrekt formaterad.</p>)
+                    setShow(true)
+
+                    document.getElementById('email').focus();
+
+                    setTimeout(() => {
+                        setSignupErrorBoxClasses('signup-error-msg');
                     }, 1000);
 
                     setSignupErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' signup-error-msg-animation');
@@ -138,6 +153,7 @@ function Signup() {
                                         placeholder="Mail"
                                         aria-describedby="inputGroupPrepend"
                                         required
+                                        id="email"
                                         onChange={ e => {
                                             setEmail(e.target.value)
                                         }}  
@@ -159,6 +175,7 @@ function Signup() {
                                         placeholder="Lösenord"
                                         aria-describedby="inputGroupPrepend"
                                         required
+                                        id="password"
                                         onChange={ e => {
                                             setPassword(e.target.value)
                                         }}  
