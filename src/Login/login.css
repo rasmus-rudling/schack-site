@@ -1,8 +1,4 @@
 .login-error-msg {
-    margin-top: 15px;
-}
-
-.login-error-msg-animation {
     animation: zoomInAndOut 1s forwards;
 }
 
@@ -18,10 +14,18 @@
     }
 }
 
-.login-link-in-form {
-    margin-left: 5px;
+.login-submit-btn {
+    width: 100%;
 }
 
-.login-submit-btn {
-    margin-top: 7px;
+.login-container {
+    /* background-color: blue; */
+}
+
+.login-form {
+    /* background-color: red; */
+}
+
+.login-btn-row {
+    /* background-color: orange; */
 }

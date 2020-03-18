@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
+
+// --- Egna CSS-filer ---
 import './login.css';
-import Form from 'react-bootstrap/Form';
+import '../index.css';
+// ----------------------
+
+// --- Bootstrap ---
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { Col, Row } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert'
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import { Col, Row, Card } from 'react-bootstrap';
+// -----------------
+
 import {
     useHistory,
     Link
@@ -13,20 +21,20 @@ import {
 
 const firebase = require('firebase');
 
-function Login() {
+const Login = () => {
     const history = useHistory();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [show, setShow] = useState(false);
     const [errorTitle, setErrorTitle] = useState('');
     const [errorText, setErrorText] = useState('');
-    const [loginErrorBoxClasses, setLoginErrorBoxClasses] = useState('login-error-msg');
+    const [loginErrorBoxClasses, setLoginErrorBoxClasses] = useState('');
 
     function submitLoginForm(event) {
         event.preventDefault();
                         
         firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-            history.push('/homepage');
+            history.push('/lobby');
         
         }, error => {
             let errorMessage = error.message;
@@ -53,108 +61,119 @@ function Login() {
             }
 
             setTimeout(() => {
-                setLoginErrorBoxClasses('login-error-msg')
+                setLoginErrorBoxClasses('')
             }, 1000);
             
-            setLoginErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' login-error-msg-animation');
+            setLoginErrorBoxClasses(_errorBoxClasses => _errorBoxClasses + ' login-error-msg');
             console.log(error.message)
         }); 
     }
 
     return (
-        <Container>
+        <Container className='login-container'>
             <Row>
-                <Col md={8}>
-                    <Form onSubmit={event => submitLoginForm(event)}>  
-                        <Form.Row>
-                            <Form.Group as={Col} md="6" controlId="validationCustomUsername">
-                                <Form.Label>Mail</Form.Label>
-                                <InputGroup>
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroupPrepend">✉</InputGroup.Text>
-                                    </InputGroup.Prepend>
+                <Col md={3}></Col> 
 
-                                    <Form.Control
-                                        type="email"
-                                        placeholder="Mail"
-                                        aria-describedby="inputGroupPrepend"
-                                        required
-                                        id="email"
-                                        onChange={e => {
-                                            setEmail(e.target.value);
-                                        }}
-                                    />
+                <Col md={6}>
+                    <Card border="primary" className='form-card'>
+                        <Card.Header>Logga in</Card.Header>
 
-                                    <Form.Control.Feedback type="invalid">
-                                        Var vänlig och välj ett användarnamn.
-                                    </Form.Control.Feedback>
-                                </InputGroup>
-                            </Form.Group>
-                        </Form.Row>
+                        <Card.Body>
+                            <Form onSubmit={event => submitLoginForm(event)} className='login-form'>  
+                                <Form.Row>
+                                    <Form.Group as={Col} md="1" />
 
-                        <Form.Row>
-                            <Form.Group as={Col} md="6" controlId="validationCustomUsername">
-                                <Form.Label>Lösenord</Form.Label>
-                                <InputGroup>
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroupPrepend">🔑</InputGroup.Text>
-                                    </InputGroup.Prepend>
+                                    <Form.Group as={Col} md="10">
+                                        <Form.Label>Mail</Form.Label>
+                                        <InputGroup>
+                                            <InputGroup.Prepend>
+                                                <InputGroup.Text>✉</InputGroup.Text>
+                                            </InputGroup.Prepend>
 
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Lösenord"
-                                        aria-describedby="inputGroupPrepend"
-                                        required
-                                        id="password"
-                                        onChange={e => {
-                                            setPassword(e.target.value);
-                                        }}
-                                    />
+                                            <Form.Control
+                                                type="email"
+                                                placeholder="Mail"
+                                                required
+                                                id="email"
+                                                onChange={event => {
+                                                    setEmail(event.target.value);
+                                                }}
+                                            />
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Form.Row>
 
-                                    <Form.Control.Feedback type="invalid">
-                                        Var vänlig och välj ett användarnamn.
-                                    </Form.Control.Feedback>
-                                </InputGroup>
-                            </Form.Group>
-                        </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col} md="1" />
 
-                        <Form.Row>
-                            <Form.Label>
-                                <Link to='/signup' className='login-link-in-form'>
-                                    Har du inget konto? Tryck här för att skapa ett!
-                                </Link>
-                            </Form.Label>
-                        </Form.Row>
+                                    <Form.Group as={Col} md="10">
+                                        <Form.Label>Lösenord</Form.Label>
+                                        <InputGroup>
+                                            <InputGroup.Prepend>
+                                                <InputGroup.Text>🔑</InputGroup.Text>
+                                            </InputGroup.Prepend>
 
-                        <Button type="submit" className='login-submit-btn'>Logga in</Button>
-                    </Form>
+                                            <Form.Control
+                                                type="password"
+                                                placeholder="Lösenord"
+                                                required
+                                                id="password"
+                                                onChange={e => {
+                                                    setPassword(e.target.value);
+                                                }}
+                                            />
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Form.Row>
+
+                                <Form.Row>
+                                    <Form.Group as={Col} md="1" />
+
+                                    <Form.Group as={Col} md="10">
+                                        <Link to='/signup' className='login-link-in-form'>
+                                            Har du inget konto? Tryck här för att skapa ett!
+                                        </Link>
+                                    </Form.Group>
+                                </Form.Row>
+                                
+                                <Form.Row className='login-btn-row'>
+                                    <Form.Group as={Col} md="4" />
+
+                                    <Form.Group as={Col} md="4">
+                                        <Button type="submit" className='login-submit-btn'>Logga in</Button>
+                                    </Form.Group>
+                                </Form.Row>
+
+                                <Form.Row>
+                                    <Form.Group as={Col} md="1" />
+
+                                    <Form.Group as={Col} md="10">
+                                        {
+                                            show ? (
+                                            
+                                                <Alert 
+                                                    variant="danger"
+                                                    className={loginErrorBoxClasses} 
+                                                    onClose={() => {
+                                                        setShow(false);
+                                                    }}
+                                                    dismissible
+                                                >
+                                                    <Alert.Heading>{errorTitle}</Alert.Heading>
+                                                    
+                                                    {errorText}
+                                                    
+                                                </Alert>
+                                            ) : (<div></div>)
+                                        }
+                                    </Form.Group>
+                                </Form.Row>
+                            </Form>
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
-            
-            <Row>
-                <Col md={6}>
-                    {
-                        show ? (
-                        
-                            <Alert 
-                                variant="danger"
-                                className={loginErrorBoxClasses} 
-                                onClose={() => {
-                                    setShow(false);
-                                }}
-                                dismissible
-                            >
-                                <Alert.Heading>{errorTitle}</Alert.Heading>
-                                
-                                {errorText}
-                                
-                            </Alert>
-                        ) : (<div></div>)
-                    }
-                </ Col>
-            </Row>
-            
-        </ Container>
+        </Container>
     )
 }
 

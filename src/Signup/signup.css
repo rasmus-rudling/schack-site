@@ -1,8 +1,4 @@
 .signup-error-msg {
-    margin-top: 15px;
-}
-
-.signup-error-msg-animation {
     animation: zoomInAndOut 1s forwards;
 }
 
@@ -18,11 +14,18 @@
     }
 }
 
-.signup-link-in-form {
-    margin-left: 5px;
-}
-
 .signup-submit-btn {
-    margin-top: 7px;
+    width: 100%;
 }
 
+.signup-container {
+    /* background-color: blue; */
+}
+
+.signup-form {
+    /* background-color: red; */
+}
+
+.signup-side {
+    /* background-color: blue; */
+}

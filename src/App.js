@@ -15,6 +15,9 @@ import {
 import Signup from './Signup/signup.js';
 import Login from './Login/login.js';
 import Homepage from './Homepage/homepage';
+import Lobby from './Lobby/lobby';
+import CreateNewGame from './CreateNewGame/createNewGame';
+// ------------------------
 
 function App() {
 
@@ -36,11 +39,17 @@ function App() {
                 <Route exact path="/homepage">
                     <Homepage />
                 </Route>
+
+                <Route exact path="/lobby">
+                    <Lobby />
+                </Route>
+
+                <Route exact path="/create-new-game">
+                    <CreateNewGame />
+                </Route>
             </Switch>
         </Router>
-    )
-
-    
+    )    
 }
 
 export default App;
