@@ -20,6 +20,7 @@ import CreateNewGame from './CreateNewGame/createNewGame';
 // ------------------------
 
 function App() {
+    console.log('Ny ändring!')
 
     return (
         <Router>
